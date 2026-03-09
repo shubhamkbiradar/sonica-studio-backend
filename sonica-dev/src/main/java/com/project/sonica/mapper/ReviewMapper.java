@@ -2,8 +2,8 @@ package com.project.sonica.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.project.sonica.DTO.ReviewRequest;
-import com.project.sonica.DTO.ReviewResponse;
+import com.project.sonica.dto.ReviewRequest;
+import com.project.sonica.dto.ReviewResponse;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Customer;
 import com.project.sonica.entity.Review;

@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.DTO.BookingRequest;
-import com.project.sonica.DTO.BookingResponse;
+import com.project.sonica.dto.BookingRequest;
+import com.project.sonica.dto.BookingResponse;
 import com.project.sonica.apiResponseWrapper.ApiResponse;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Customer;

@@ -6,14 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import com.project.sonica.DTO.CustomerDashboard;
-import com.project.sonica.entity.AdminDashboard;
+import com.project.sonica.dto.AdminDashboard;
+import com.project.sonica.dto.CustomerDashboard;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Customer;
 import com.project.sonica.entity.Inquiry;
 import com.project.sonica.entity.Payment;
 import com.project.sonica.entity.Review;
 import com.project.sonica.repos.BookingRepository;
+import com.project.sonica.repos.CustomerRepository;
 import com.project.sonica.repos.InquiryRepository;
 import com.project.sonica.repos.PaymentRepository;
 import com.project.sonica.repos.ReviewRepository;
@@ -29,9 +30,12 @@ public class DashboardService {
     private ReviewRepository reviewRepository;
     @Autowired
     private InquiryRepository inquiryRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    public CustomerDashboard getCustomerDashboard(Customer customer) {
+    public CustomerDashboard getCustomerDashboard(String email) {
+        Customer customer = customerRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         List<Booking> bookings = bookingRepository.findByCustomer(customer);
         List<Payment> payments = paymentRepository.findByCustomer(customer);
         List<Review> reviews = reviewRepository.findByCustomer(customer);

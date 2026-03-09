@@ -1,11 +1,12 @@
 package com.project.sonica.dashboard;
 
-import java.util.Map;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.project.sonica.dto.AdminDashboard;
+import com.project.sonica.service.DashboardService;
 
 @RestController
 @RequestMapping("/admin")
@@ -17,7 +18,7 @@ public class AdminDashboardController {
 	}
 
 	@GetMapping("/dashboard")
-	public ResponseEntity<Map<String, Object>> dashboard() {
-		return ResponseEntity.ok(dashboardService.getAdminData());
+	public ResponseEntity<AdminDashboard> dashboard() {
+		return ResponseEntity.ok(dashboardService.getAdminDashboard());
 	}
 }

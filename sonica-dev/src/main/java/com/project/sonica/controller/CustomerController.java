@@ -1,4 +1,4 @@
-package com.project.sonica.cutomer;
+package com.project.sonica.controller;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.DTO.CustomerRequest;
-import com.project.sonica.DTO.CustomerResponse;
+import com.project.sonica.dto.CustomerRequest;
+import com.project.sonica.dto.CustomerResponse;
 import com.project.sonica.apiResponseWrapper.ApiResponse;
 import com.project.sonica.entity.Customer;
 import com.project.sonica.mapper.CustomerMapper;

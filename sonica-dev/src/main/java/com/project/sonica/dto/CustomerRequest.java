@@ -1,19 +1,10 @@
-package com.project.sonica.DTO;
+package com.project.sonica.dto;
 
-public class CustomerResponse {
-	private Integer customerId;
+public class CustomerRequest {
 	private String name;
 	private String email;
 	private String phoneNumber;
-	private String role;
-
-	public Integer getCustomerId() {
-		return customerId;
-	}
-
-	public void setCustomerId(Integer customerId) {
-		this.customerId = customerId;
-	}
+	private String password;
 
 	public String getName() {
 		return name;
@@ -39,12 +30,12 @@ public class CustomerResponse {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getRole() {
-		return role;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

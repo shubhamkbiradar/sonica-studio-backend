@@ -1,4 +1,4 @@
-package com.project.sonica.DTO;
+package com.project.sonica.dto;
 
 public class ContractRequest {
 	private Integer bookingId;

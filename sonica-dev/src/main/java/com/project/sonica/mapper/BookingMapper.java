@@ -3,8 +3,8 @@ package com.project.sonica.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.project.sonica.DTO.BookingRequest;
-import com.project.sonica.DTO.BookingResponse;
+import com.project.sonica.dto.BookingRequest;
+import com.project.sonica.dto.BookingResponse;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.BookingStatus;
 import com.project.sonica.entity.Customer;

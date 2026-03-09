@@ -1,6 +1,4 @@
-package com.project.sonica.cutomer;
-
-import java.util.Map;
+package com.project.sonica.dashboard;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,7 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.dashboard.DashboardService;
+import com.project.sonica.dto.CustomerDashboard;
+import com.project.sonica.service.DashboardService;
 
 @RestController
 @RequestMapping("/customer")
@@ -20,7 +19,7 @@ public class CustomerDashboardController {
     }
 
     @GetMapping("/dashboard/{name}")
-    public ResponseEntity<Map<String, Object>> dashboard(@PathVariable String name) {
-        return ResponseEntity.ok(dashboardService.getCustomerData(name));
+    public ResponseEntity<CustomerDashboard> dashboard(@PathVariable String name) {
+        return ResponseEntity.ok(dashboardService.getCustomerDashboard(name));
     }
 }

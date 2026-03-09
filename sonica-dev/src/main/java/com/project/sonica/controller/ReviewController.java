@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.DTO.ReviewRequest;
-import com.project.sonica.DTO.ReviewResponse;
+import com.project.sonica.dto.ReviewRequest;
+import com.project.sonica.dto.ReviewResponse;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Customer;
 import com.project.sonica.entity.Review;

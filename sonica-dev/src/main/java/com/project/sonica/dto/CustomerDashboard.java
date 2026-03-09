@@ -1,23 +1,24 @@
-package com.project.sonica.entity;
+package com.project.sonica.dto;
 
 import java.util.List;
 
-public class AdminDashboard {
+import com.project.sonica.entity.Booking;
+import com.project.sonica.entity.Payment;
+import com.project.sonica.entity.Review;
+
+public class CustomerDashboard {
 
 	private List<Booking> bookings;
 	private List<Payment> payments;
-	private List<Inquiry> inquiries;
 	private List<Review> reviews;
 
 	// Constructors
-	public AdminDashboard() {
+	public CustomerDashboard() {
 	}
 
-	public AdminDashboard(List<Booking> bookings, List<Payment> payments, List<Inquiry> inquiries,
-			List<Review> reviews) {
+	public CustomerDashboard(List<Booking> bookings, List<Payment> payments, List<Review> reviews) {
 		this.bookings = bookings;
 		this.payments = payments;
-		this.inquiries = inquiries;
 		this.reviews = reviews;
 	}
 
@@ -36,14 +37,6 @@ public class AdminDashboard {
 
 	public void setPayments(List<Payment> payments) {
 		this.payments = payments;
-	}
-
-	public List<Inquiry> getInquiries() {
-		return inquiries;
-	}
-
-	public void setInquiries(List<Inquiry> inquiries) {
-		this.inquiries = inquiries;
 	}
 
 	public List<Review> getReviews() {

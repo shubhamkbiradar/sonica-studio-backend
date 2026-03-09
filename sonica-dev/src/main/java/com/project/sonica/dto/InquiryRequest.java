@@ -1,21 +1,20 @@
-package com.project.sonica.DTO;
+package com.project.sonica.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class InquiryResponse {
-	private Integer inquiryId;
+public class InquiryRequest {
+	private Integer customerId;
 	private LocalDate eventDate;
 	private String location;
 	private BigDecimal budget;
-	private String status;
 
-	public Integer getInquiryId() {
-		return inquiryId;
+	public Integer getCustomerId() {
+		return customerId;
 	}
 
-	public void setInquiryId(Integer inquiryId) {
-		this.inquiryId = inquiryId;
+	public void setCustomerId(Integer customerId) {
+		this.customerId = customerId;
 	}
 
 	public LocalDate getEventDate() {
@@ -40,14 +39,6 @@ public class InquiryResponse {
 
 	public void setBudget(BigDecimal budget) {
 		this.budget = budget;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 }

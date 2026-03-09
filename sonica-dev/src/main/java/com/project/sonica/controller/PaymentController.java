@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.DTO.PaymentRequest;
-import com.project.sonica.DTO.PaymentResponse;
+import com.project.sonica.dto.PaymentRequest;
+import com.project.sonica.dto.PaymentResponse;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Payment;
 import com.project.sonica.entity.PaymentStatus;

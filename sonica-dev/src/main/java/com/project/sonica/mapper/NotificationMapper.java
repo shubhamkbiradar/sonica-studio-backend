@@ -2,8 +2,8 @@ package com.project.sonica.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.project.sonica.DTO.NotificationRequest;
-import com.project.sonica.DTO.NotificationResponse;
+import com.project.sonica.dto.NotificationRequest;
+import com.project.sonica.dto.NotificationResponse;
 import com.project.sonica.entity.Customer;
 import com.project.sonica.entity.Notification;
 

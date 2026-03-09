@@ -2,8 +2,8 @@ package com.project.sonica.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.project.sonica.DTO.ServicePlanRequest;
-import com.project.sonica.DTO.ServicePlanResponse;
+import com.project.sonica.dto.ServicePlanRequest;
+import com.project.sonica.dto.ServicePlanResponse;
 import com.project.sonica.entity.ServicePlan;
 
 @Component

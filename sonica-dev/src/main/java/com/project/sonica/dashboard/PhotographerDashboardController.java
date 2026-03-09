@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/photographer")
 public class PhotographerDashboardController {
-	private final DashboardService dashboardService;
+	private final PhotographerDashboardService dashboardService;
 
-	public PhotographerDashboardController(DashboardService dashboardService) {
+	public PhotographerDashboardController(PhotographerDashboardService dashboardService) {
 		this.dashboardService = dashboardService;
 	}
 

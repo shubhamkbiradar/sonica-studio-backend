@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.DTO.ServicePlanRequest;
-import com.project.sonica.DTO.ServicePlanResponse;
+import com.project.sonica.dto.ServicePlanRequest;
+import com.project.sonica.dto.ServicePlanResponse;
 import com.project.sonica.entity.ServicePlan;
 import com.project.sonica.mapper.ServicePlanMapper;
 import com.project.sonica.pagedResponse.PagedResponse;

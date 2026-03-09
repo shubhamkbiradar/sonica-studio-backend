@@ -2,8 +2,8 @@ package com.project.sonica.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.project.sonica.DTO.PaymentRequest;
-import com.project.sonica.DTO.PaymentResponse;
+import com.project.sonica.dto.PaymentRequest;
+import com.project.sonica.dto.PaymentResponse;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Payment;
 import com.project.sonica.entity.PaymentStatus;

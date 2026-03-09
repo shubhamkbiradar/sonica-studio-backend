@@ -2,8 +2,8 @@ package com.project.sonica.mapper;
 
 import org.springframework.stereotype.Component;
 
-import com.project.sonica.DTO.CustomerRequest;
-import com.project.sonica.DTO.CustomerResponse;
+import com.project.sonica.dto.CustomerRequest;
+import com.project.sonica.dto.CustomerResponse;
 import com.project.sonica.entity.Customer;
 
 @Component
