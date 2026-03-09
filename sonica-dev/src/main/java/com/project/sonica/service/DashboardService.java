@@ -37,7 +37,7 @@ public class DashboardService {
     public CustomerDashboard getCustomerDashboard(String email) {
         Customer customer = customerRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         List<Booking> bookings = bookingRepository.findByCustomer(customer);
-        List<Payment> payments = paymentRepository.findByCustomer(customer);
+        List<Payment> payments = paymentRepository.findByBookingCustomer(customer);
         List<Review> reviews = reviewRepository.findByCustomer(customer);
 
         return new CustomerDashboard(bookings, payments, reviews);

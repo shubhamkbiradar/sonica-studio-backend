@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.sonica.exceptionHandler.ApiResponse;
+import com.project.sonica.apiResponseWrapper.ApiResponse;
 
 @RestController
 @RequestMapping("/api/admin/security-events")
@@ -31,7 +31,7 @@ public class SecurityEventController {
 	@Autowired
 	private SecurityEventMapper mapper;
 
-	@GetMapping
+	@GetMapping("/all")
 	public ResponseEntity<ApiResponse<List<SecurityEvent>>> getAllEvents() {
 		List<SecurityEvent> events = securityEventRepository.findAll();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Security events fetched successfully", events));
@@ -39,7 +39,7 @@ public class SecurityEventController {
 
 	@GetMapping("/user/{username}")
 	public ResponseEntity<ApiResponse<List<SecurityEvent>>> getEventsByUser(@PathVariable String username) {
-		List<SecurityEvent> events = (List<SecurityEvent>) securityEventRepository.findByUsername(username, null);
+		List<SecurityEvent> events = securityEventRepository.findByUsername(username, Pageable.unpaged()).getContent();
 		return ResponseEntity.ok(new ApiResponse<>(200, "Security events for user fetched successfully", events));
 	}
 

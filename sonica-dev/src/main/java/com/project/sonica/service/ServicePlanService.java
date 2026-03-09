@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,8 +19,11 @@ import com.project.sonica.repos.ServicePlanRepository;
 
 @Service
 public class ServicePlanService {
-	@Autowired
-	private ServicePlanRepository servicePlanRepository;
+	private final ServicePlanRepository servicePlanRepository;
+
+	public ServicePlanService(ServicePlanRepository servicePlanRepository) {
+		this.servicePlanRepository = servicePlanRepository;
+	}
 
 	@PreAuthorize("hasRole('ADMIN')")
 	public ServicePlan createPlan(ServicePlan plan) {

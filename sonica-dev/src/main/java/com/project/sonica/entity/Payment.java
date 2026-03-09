@@ -1,15 +1,14 @@
 package com.project.sonica.entity;
 
 import java.math.BigDecimal;
-import java.security.Timestamp;
-
-import org.springframework.data.annotation.Id;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;

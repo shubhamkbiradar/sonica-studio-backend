@@ -3,15 +3,13 @@ package com.project.sonica.entity;
 import java.sql.Timestamp;
 import java.util.List;
 
-import javax.management.Notification;
-
-import org.springframework.data.annotation.Id;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,7 +23,6 @@ public class Customer {
 	private String role;
 	private Timestamp createdAt;
 	private Timestamp updatedAt;
-	private Contract contract;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer customerId;
@@ -120,11 +117,11 @@ public class Customer {
 		this.inquiries = inquiries;
 	}
 
-	public List<Notification> getNotifications() {
+	public List<com.project.sonica.entity.Notification> getNotifications() {
 		return notifications;
 	}
 
-	public void setNotifications(List<Notification> notifications) {
+	public void setNotifications(List<com.project.sonica.entity.Notification> notifications) {
 		this.notifications = notifications;
 	}
 
@@ -138,6 +135,9 @@ public class Customer {
 		this.contract = contract;
 	}
 
+	@OneToOne(mappedBy = "customer")
+	private Contract contract;
+
 	@OneToMany(mappedBy = "customer")
 	private List<Booking> bookings;
 
@@ -148,5 +148,5 @@ public class Customer {
 	private List<Inquiry> inquiries;
 
 	@OneToMany(mappedBy = "customer")
-	private List<Notification> notifications;
+	private List<com.project.sonica.entity.Notification> notifications;
 }

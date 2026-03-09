@@ -73,18 +73,6 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse<>(400, ex.getMessage(), null));
 	}
 
-	@ExceptionHandler(TokenBlacklistedException.class)
-	public ResponseEntity<ApiResponse<String>> handleBlacklistedToken(TokenBlacklistedException ex) {
-		return ResponseEntity.status(HttpStatus.FORBIDDEN)
-				.body(new ApiResponse<>(403, "Refresh token is invalidated", null));
-	}
-
-	@ExceptionHandler(TokenExpiredException.class)
-	public ResponseEntity<ApiResponse<String>> handleExpiredToken(TokenExpiredException ex) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-				.body(new ApiResponse<>(401, "Refresh token expired. Please login again.", null));
-	}
-
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<String>> handleGeneric(Exception ex) {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

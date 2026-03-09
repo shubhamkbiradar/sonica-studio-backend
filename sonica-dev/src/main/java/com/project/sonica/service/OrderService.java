@@ -11,6 +11,7 @@ import com.project.sonica.entity.OrderStatus;
 import com.project.sonica.entity.Payment;
 import com.project.sonica.repos.BookingRepository;
 import com.project.sonica.repos.ContractRepository;
+import com.project.sonica.repos.OrderRepository;
 import com.project.sonica.repos.PaymentRepository;
 
 @Service
@@ -22,9 +23,11 @@ public class OrderService {
     private PaymentRepository paymentRepository;
     @Autowired
     private ContractRepository contractRepository;
+    @Autowired
+    private OrderRepository orderRepository;
 
     @PreAuthorize("hasRole('CUSTOMER')")
-    public Order createOrder(Integer bookingId, Integer paymentId, Integer contractId) {
+    public Order createOrder(Integer bookingId, Integer paymentId, Long contractId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
         Payment payment = paymentRepository.findById(paymentId)
@@ -38,7 +41,6 @@ public class OrderService {
         order.setContract(contract);
         order.setStatus(OrderStatus.CONFIRMED);
 
-        // Save via OrderRepository (assumed)
-        return order;
+        return orderRepository.save(order);
     }
 }

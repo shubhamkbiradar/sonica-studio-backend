@@ -8,15 +8,16 @@ import org.springframework.stereotype.Repository;
 
 import com.project.sonica.entity.Customer;
 import com.project.sonica.entity.Payment;
+import com.project.sonica.entity.PaymentStatus;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 	Optional<Payment> findByTransactionId(String transactionId);
 
-	List<Payment> findByStatus(String status);
+	List<Payment> findByStatus(PaymentStatus status);
 
-	List<Payment> findByCustomer(Customer customer);
+	List<Payment> findByBookingCustomer(Customer customer);
 
-	long countByStatus(String status);
+	long countByStatus(PaymentStatus status);
 
 }

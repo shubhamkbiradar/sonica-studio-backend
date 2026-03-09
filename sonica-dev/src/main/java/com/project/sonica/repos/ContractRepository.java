@@ -11,6 +11,4 @@ import com.project.sonica.entity.Contract;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
     Optional<Contract> findByBooking(Booking booking);
-
-	Optional<Contract> findById(Integer contractId);
 }

@@ -34,7 +34,7 @@ public class ContractController {
 	}
 
 	@PutMapping("/{id}/sign")
-	public ResponseEntity<Void> sign(@PathVariable Integer id) {
+	public ResponseEntity<Void> sign(@PathVariable Long id) {
 		contractService.signContract(id);
 		return ResponseEntity.noContent().build();
 	}

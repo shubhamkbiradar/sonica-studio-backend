@@ -3,14 +3,14 @@ package com.project.sonica.entity;
 
 import java.sql.Timestamp;
 
-import org.springframework.data.annotation.Id;
-
 import com.project.sonica.security.User;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -28,6 +28,9 @@ public class Contract {
 	@OneToOne
 	@JoinColumn(name = "customer_id", nullable = false)
 	private Customer customer;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
 	
 	public User getUser() {
@@ -99,14 +102,4 @@ public class Contract {
 	private Boolean signedByCustomer;
 	private Timestamp signedDate;
 	private Timestamp createdAt;
-
-	public void setId(long l) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void setCustomer(User customer) {
-		// TODO Auto-generated method stub
-		
-	}
 }

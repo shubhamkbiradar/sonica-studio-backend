@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.entity.PaymentStatus;
 import com.project.sonica.repos.BookingRepository;
 import com.project.sonica.repos.PaymentRepository;
 
@@ -24,7 +25,7 @@ public class PhotographerDashboardService {
     public Map<String, Object> getPhotographerData(String photographerName) {
         Map<String, Object> data = new HashMap<>();
         data.put("upcomingShoots", bookingRepository.findByPhotographerName(photographerName));
-        data.put("pendingApprovals", paymentRepository.countByStatus("PENDING"));
+        data.put("pendingApprovals", paymentRepository.countByStatus(PaymentStatus.PENDING));
         return data;
     }
 }

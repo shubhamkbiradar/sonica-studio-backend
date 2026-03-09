@@ -3,7 +3,6 @@ package com.project.sonica.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +23,16 @@ import com.project.sonica.service.CustomerService;
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
-	@Autowired
-	private CustomerService customerService;
-	@Autowired
-	private CustomerMapper customerMapper;
-	@Autowired
-	private ResponseBuilder responseBuilder;
+	private final CustomerService customerService;
+	private final CustomerMapper customerMapper;
+	private final ResponseBuilder responseBuilder;
+
+	public CustomerController(CustomerService customerService, CustomerMapper customerMapper,
+			ResponseBuilder responseBuilder) {
+		this.customerService = customerService;
+		this.customerMapper = customerMapper;
+		this.responseBuilder = responseBuilder;
+	}
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<CustomerResponse>> register(@RequestBody CustomerRequest request) {

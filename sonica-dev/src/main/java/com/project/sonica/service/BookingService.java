@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -19,58 +17,20 @@ import com.project.sonica.entity.BookingStatus;
 import com.project.sonica.entity.Customer;
 import com.project.sonica.genericSearch.SearchOperation;
 import com.project.sonica.genericSearch.SpecificationBuilder;
-import com.project.sonica.photographyServices.PhotographyServiceRepository;
-import com.project.sonica.photographyServices.PhotographyServices;
 import com.project.sonica.repos.BookingRepository;
-import com.project.sonica.security.User;
-import com.project.sonica.security.UserRepository;
 
 @Service
 public class BookingService {
-	@Autowired
 	private final BookingRepository bookingRepository;
-	@Autowired
-	private final UserRepository userRepository;
-	@Autowired
-	private final PhotographyServiceRepository serviceRepository;
 
-	public BookingService(BookingRepository bookingRepository, UserRepository userRepository,
-			PhotographyServiceRepository serviceRepository) {
+	public BookingService(BookingRepository bookingRepository) {
 		this.bookingRepository = bookingRepository;
-		this.userRepository = userRepository;
-		this.serviceRepository = serviceRepository;
 	}
-
 
 	@PreAuthorize("hasRole('CUSTOMER')")
 	public Booking createBooking(Booking booking) {
 		return bookingRepository.save(booking);
 	}
-
-	//customer can book
-	// Customer books a service
-    public Booking bookService(Long customerId, Long serviceId) {
-        User customer = userRepository.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
-        PhotographyServices service = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Service not found"));
-
-        Booking booking = new Booking();
-//        booking.setCustomer(customer);
-        booking.setCustomerName(customer.getPassword());
-        booking.setPhotographyServices(service);
-        booking.setDate(LocalDate.now().toString());
-        booking.setStatus(BookingStatus.PENDING_CONFIRMATION);
-
-        return bookingRepository.save(booking);
-    }
-
-    // Customer views their bookings
-//    public List<Booking> getBookingsByCustomer(Long customerId) {
-//        User customer = userRepository.findById(customerId)
-//                .orElseThrow(() -> new RuntimeException("Customer not found"));
-//        return bookingRepository.findByCustomer(customer);
-//    }
 
 	
 	public List<Booking> getBookingsByCustomer(Customer customer) {
@@ -94,8 +54,8 @@ public class BookingService {
 		return bookingRepository.findById(id);
 	}
 
-	public Page<Booking> getAllBookings(PageRequest pageRequest) {
-		return bookingRepository.findAll(pageRequest);
+	public Page<Booking> getAllBookings(Pageable pageable) {
+		return bookingRepository.findAll(pageable);
 	}
 
 	public Page<Booking> getFilteredBookings(Map<String, String> filters,

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.project.sonica.exceptionHandler.ApiResponse;
+import com.project.sonica.apiResponseWrapper.ApiResponse;
 import com.project.sonica.exceptionHandler.TokenBlacklistedException;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;

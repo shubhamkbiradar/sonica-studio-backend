@@ -3,7 +3,6 @@ package com.project.sonica.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.project.sonica.entity.Customer;
@@ -12,8 +11,11 @@ import com.project.sonica.repos.CustomerRepository;
 
 @Service
 public class CustomerService {
-	@Autowired
-	private CustomerRepository customerRepository;
+	private final CustomerRepository customerRepository;
+
+	public CustomerService(CustomerRepository customerRepository) {
+		this.customerRepository = customerRepository;
+	}
 
 	public Customer registerCustomer(Customer customer) {
 		return customerRepository.save(customer);

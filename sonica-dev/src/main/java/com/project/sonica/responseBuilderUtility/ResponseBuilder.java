@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.project.sonica.apiResponseWrapper.ApiResponse;
 import com.project.sonica.pagedResponse.PagedResponse;
 
-@Component
+@Component("apiResponseBuilder")
 public class ResponseBuilder {
 
     public <T> ResponseEntity<ApiResponse<T>> success(T data, String message) {
@@ -53,36 +53,3 @@ public class ResponseBuilder {
         return ResponseEntity.ok(response);
     }
 }
-
-
-
-//@Component
-//public class ResponseBuilder {
-//
-//    public <T> ResponseEntity<ApiResponse<T>> success(T data, String message) {
-//        ApiResponse<T> response = new ApiResponse<>(
-//                HttpStatus.OK.value(),
-//                message,
-//                data
-//        );
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    public <T> ResponseEntity<ApiResponse<T>> created(T data, String message) {
-//        ApiResponse<T> response = new ApiResponse<>(
-//                HttpStatus.CREATED.value(),
-//                message,
-//                data
-//        );
-//        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-//    }
-//
-//    public <T> ResponseEntity<ApiResponse<T>> error(HttpStatus status, String message) {
-//        ApiResponse<T> response = new ApiResponse<>(
-//                status.value(),
-//                message,
-//                null
-//        );
-//        return ResponseEntity.status(status).body(response);
-//    }
-//}

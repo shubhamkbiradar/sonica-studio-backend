@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,12 +28,16 @@ import com.project.sonica.service.ServicePlanService;
 @RestController
 @RequestMapping("/api/plans")
 public class ServicePlanController {
-	@Autowired
-	private ServicePlanService servicePlanService;
-	@Autowired
-	private ServicePlanMapper planMapper;
-	@Autowired
-	private ResponseBuilder responseBuilder;
+	private final ServicePlanService servicePlanService;
+	private final ServicePlanMapper planMapper;
+	private final ResponseBuilder responseBuilder;
+
+	public ServicePlanController(ServicePlanService servicePlanService, ServicePlanMapper planMapper,
+			ResponseBuilder responseBuilder) {
+		this.servicePlanService = servicePlanService;
+		this.planMapper = planMapper;
+		this.responseBuilder = responseBuilder;
+	}
 
 	@PostMapping
 	public ResponseEntity<ServicePlanResponse> create(@RequestBody ServicePlanRequest request) {

@@ -29,7 +29,7 @@ public class ContractService {
 		return contractRepository.findById(contractId).orElseThrow(() -> new RuntimeException("Contract not found"));
 	}
 
-	public void signContract(Integer contractId) {
+	public void signContract(Long contractId) {
 		Contract contract = contractRepository.findById(contractId)
 				.orElseThrow(() -> new RuntimeException("Contract not found"));
 		contract.setSignedByCustomer(true);
