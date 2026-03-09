@@ -8,6 +8,8 @@ import com.project.sonica.security.User;
 import com.project.sonica.photographyServices.PhotographyServices;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,7 +45,10 @@ public class Booking {
 	private String eventType;
 	private LocalDate eventDate;
 	private String location;
+
+	@Enumerated(EnumType.STRING)
 	private BookingStatus status;
+
 	private Timestamp createdAt;
 	private String date;
 	private String customerName;
