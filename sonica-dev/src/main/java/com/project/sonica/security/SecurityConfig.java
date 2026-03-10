@@ -39,7 +39,11 @@ public class SecurityConfig {
 			CustomAccessDeniedHandler accessDeniedHandler, CustomAuthenticationEntryPoint authenticationEntryPoint)
 			throws Exception {
 		http.csrf(csrf -> csrf.disable())
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+				.authorizeHttpRequests(auth -> auth
+						// Public endpoints (no JWT required)
+						// Springdoc defaults to `/v3/api-docs/**`. Some environments/tools override it to `/v3/docs/**`.
+						.requestMatchers("/api/auth/**", "/v3/api-docs/**", "/v3/docs/**", "/swagger-ui/**", "/swagger-ui.html")
+						.permitAll()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN").requestMatchers("/api/customers/**")
 						.hasRole("CUSTOMER").requestMatchers("/api/photographers/**").hasRole("PHOTOGRAPHER")
 						.requestMatchers("/api/bookings/**").hasAnyRole("CUSTOMER", "ADMIN").anyRequest()
