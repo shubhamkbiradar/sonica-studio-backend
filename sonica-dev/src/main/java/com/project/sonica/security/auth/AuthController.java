@@ -22,6 +22,8 @@ import com.project.sonica.security.JwtUtil;
 import com.project.sonica.security.RegisterRequest;
 import com.project.sonica.security.User;
 import com.project.sonica.security.UserService;
+import com.project.sonica.security.oauth.GoogleAuthRequest;
+import com.project.sonica.security.oauth.GoogleOAuthService;
 import com.project.sonica.security.token.BlacklistService;
 import com.project.sonica.security.token.RefreshToken;
 import com.project.sonica.security.token.RefreshTokenService;
@@ -41,23 +43,14 @@ public class AuthController {
 	private RefreshTokenService refreshTokenService;
 	@Autowired
 	private BlacklistService blacklistService;
+	@Autowired
+	private GoogleOAuthService googleOAuthService;
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<String>> register(@RequestBody RegisterRequest request) {
 		User user = userService.registerUser(request);
 		return ResponseEntity.ok(new ApiResponse<>(200, "User registered successfully", user.getUsername()));
 	}
-
-//	@PostMapping("/login")
-//	public ResponseEntity<ApiResponse<String>> login(@RequestBody AuthRequest request) {
-//		authenticationManager
-//				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-//
-//		final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
-//		final String jwt = jwtUtil.generateToken(userDetails);
-//
-//		return ResponseEntity.ok(new ApiResponse<>(200, "Login successful", jwt));
-//	}
 
 	@PostMapping("/login")
 	public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody AuthRequest request) {
@@ -75,12 +68,36 @@ public class AuthController {
 		return ResponseEntity.ok(new ApiResponse<>(200, "Login successful", tokens));
 	}
 
-//	Rotating Refresh Endpoint
-//	 Benefits
-//	 - Stronger security → stolen refresh tokens can’t be reused.
-//	 - Revocable → refresh tokens stored in DB, can be deleted on logout.
-//	 - Rotation policy → aligns with best practices (OAuth2, OpenID Connect).
-//	 - Clean flow → client always receives a fresh pair of tokens
+	/**
+	 * Google OAuth2 (OpenID Connect) sign-in.
+	 *
+	 * Frontend flow:
+	 * 1) Use Google Identity Services to obtain an ID token.
+	 * 2) POST `{ "idToken": "..." }` to this endpoint.
+	 * 3) Backend verifies the ID token and issues Sonica access/refresh tokens.
+	 */
+	@PostMapping("/google")
+	public ResponseEntity<ApiResponse<Map<String, Object>>> google(@RequestBody GoogleAuthRequest request) {
+		User user = googleOAuthService.upsertFromIdToken(request.getIdToken());
+
+		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
+		String accessToken = jwtUtil.generateAccessToken(userDetails);
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getEmail());
+
+		Map<String, Object> data = new HashMap<>();
+		data.put("accessToken", accessToken);
+		data.put("refreshToken", refreshToken.getToken());
+
+		Map<String, String> userInfo = new HashMap<>();
+		userInfo.put("email", user.getEmail());
+		userInfo.put("firstName", user.getFirstName());
+		userInfo.put("lastName", user.getLastName());
+		userInfo.put("username", user.getUsername());
+		userInfo.put("role", user.getRole() == null ? null : user.getRole().name());
+		data.put("user", userInfo);
+
+		return ResponseEntity.ok(new ApiResponse<>(200, "Google login successful", data));
+	}
 
 	@PostMapping("/refresh")
 	public ResponseEntity<ApiResponse<Map<String, String>>> refresh(@RequestBody Map<String, String> request) {
@@ -106,15 +123,15 @@ public class AuthController {
 
 		return ResponseEntity.ok(new ApiResponse<>(200, "Token refreshed successfully", tokens));
 	}
-	
-    @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email, @RequestParam String newPassword) {
-        try {
-            userService.resetPassword(email, newPassword);
-            return ResponseEntity.ok("Password reset successful!");
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
+	@PostMapping("/forgot-password")
+	public ResponseEntity<String> forgotPassword(@RequestParam String email, @RequestParam String newPassword) {
+		try {
+			userService.resetPassword(email, newPassword);
+			return ResponseEntity.ok("Password reset successful!");
+		} catch (RuntimeException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
 }
+

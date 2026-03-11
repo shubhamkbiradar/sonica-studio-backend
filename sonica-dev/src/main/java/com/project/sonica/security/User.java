@@ -19,6 +19,14 @@ public class User {
 	private String password;
 	private String email;
 
+	// OAuth profile fields (used for Google sign-in). Kept optional for backwards compatibility.
+	private String firstName;
+	private String lastName;
+	private String googleSub;
+
+	@Enumerated(EnumType.STRING)
+	private AuthProvider provider;
+
 	public String getEmail() {
 		return email;
 	}
@@ -44,6 +52,38 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getGoogleSub() {
+		return googleSub;
+	}
+
+	public void setGoogleSub(String googleSub) {
+		this.googleSub = googleSub;
+	}
+
+	public AuthProvider getProvider() {
+		return provider;
+	}
+
+	public void setProvider(AuthProvider provider) {
+		this.provider = provider;
 	}
 
 	public String getPassword() {

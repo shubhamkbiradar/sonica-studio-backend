@@ -19,8 +19,14 @@ public class UserService {
 
 		User user = new User();
 		user.setUsername(request.getUsername());
+		// This codebase authenticates users by email in CustomUserDetailsService.
+		// If the UI sends email as "username" (common), keep the record consistent.
+		if (request.getUsername() != null && request.getUsername().contains("@")) {
+			user.setEmail(request.getUsername());
+		}
 		user.setPassword(passwordEncoder.encode(request.getPassword())); // hash password
 		user.setRole(request.getRole());
+		user.setProvider(AuthProvider.LOCAL);
 
 		return userRepository.save(user);
 	}
