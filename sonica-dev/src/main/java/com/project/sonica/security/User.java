@@ -1,6 +1,7 @@
 package com.project.sonica.security;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -15,8 +16,14 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(length = 255)
 	private String username;
+
+	// BCrypt hashes are ~60 chars; keep headroom to avoid truncation and login failures.
+	@Column(nullable = false, length = 255)
 	private String password;
+
+	@Column(length = 320)
 	private String email;
 
 	// OAuth profile fields (used for Google sign-in). Kept optional for backwards compatibility.

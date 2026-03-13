@@ -2,13 +2,16 @@ package com.project.sonica.security.auth;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.Instant;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,18 +24,20 @@ import com.project.sonica.exceptionHandler.TokenExpiredException;
 import com.project.sonica.security.JwtUtil;
 import com.project.sonica.security.RegisterRequest;
 import com.project.sonica.security.User;
+import com.project.sonica.security.UserRepository;
 import com.project.sonica.security.UserService;
 import com.project.sonica.security.oauth.GoogleAuthRequest;
 import com.project.sonica.security.oauth.GoogleOAuthService;
 import com.project.sonica.security.token.BlacklistService;
 import com.project.sonica.security.token.RefreshToken;
+import com.project.sonica.security.token.RefreshTokenRepository;
 import com.project.sonica.security.token.RefreshTokenService;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
 	@Autowired
 	private JwtUtil jwtUtil;
 	@Autowired
@@ -45,6 +50,12 @@ public class AuthController {
 	private BlacklistService blacklistService;
 	@Autowired
 	private GoogleOAuthService googleOAuthService;
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private RefreshTokenRepository refreshTokenRepository;
 
 	@PostMapping("/register")
 	public ResponseEntity<ApiResponse<String>> register(@RequestBody RegisterRequest request) {
@@ -54,12 +65,21 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody AuthRequest request) {
-		authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+		// Use explicit credential verification so login behavior matches our persisted user model
+		// (users are looked up by email in CustomUserDetailsService).
+		String identifier = request.getUsername();
+		User user = userRepository.findByEmail(identifier).or(() -> userRepository.findByUsername(identifier))
+				.orElseThrow(() -> new BadCredentialsException("Invalid username or password"));
 
-		UserDetails userDetails = userDetailsService.loadUserByUsername(request.getUsername());
+		if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+			throw new BadCredentialsException("Invalid username or password");
+		}
+
+		// For JWT subject, prefer email (that's what CustomUserDetailsService uses).
+		String principal = (user.getEmail() == null || user.getEmail().isBlank()) ? user.getUsername() : user.getEmail();
+		UserDetails userDetails = userDetailsService.loadUserByUsername(principal);
 		String jwt = jwtUtil.generateAccessToken(userDetails);
-		RefreshToken refreshToken = refreshTokenService.createRefreshToken(request.getUsername());
+		RefreshToken refreshToken = refreshTokenService.createRefreshToken(principal);
 
 		Map<String, String> tokens = new HashMap<>();
 		tokens.put("accessToken", jwt);
@@ -99,6 +119,44 @@ public class AuthController {
 		return ResponseEntity.ok(new ApiResponse<>(200, "Google login successful", data));
 	}
 
+	/**
+	 * Stateless JWT logout:
+	 * - Revokes refresh token (DB delete + blacklist).
+	 * - Optionally blacklists the provided access token until its expiry.
+	 */
+	@PostMapping("/logout")
+	public ResponseEntity<ApiResponse<String>> logout(@RequestBody LogoutRequest request,
+			jakarta.servlet.http.HttpServletRequest httpRequest) {
+		String refreshToken = request == null ? null : request.getRefreshToken();
+
+		if (refreshToken != null && !refreshToken.isBlank()) {
+			refreshTokenRepository.findByToken(refreshToken).ifPresent(rt -> {
+				blacklistService.blacklistToken(refreshToken, rt.getExpiryDate());
+				refreshTokenRepository.delete(rt);
+			});
+		}
+
+		String accessToken = request == null ? null : request.getAccessToken();
+		if (accessToken == null || accessToken.isBlank()) {
+			String authHeader = httpRequest.getHeader("Authorization");
+			if (authHeader != null && authHeader.startsWith("Bearer ")) {
+				accessToken = authHeader.substring(7);
+			}
+		}
+
+		if (accessToken != null && !accessToken.isBlank()) {
+			try {
+				Instant exp = jwtUtil.extractExpiration(accessToken).toInstant();
+				blacklistService.blacklistToken(accessToken, exp);
+			} catch (RuntimeException e) {
+				// Ignore parse errors: refresh token revocation is the primary logout mechanism.
+				logger.warn("Failed to blacklist access token during logout: {}", e.getMessage());
+			}
+		}
+
+		return ResponseEntity.ok(new ApiResponse<>(200, "Logout successful", null));
+	}
+
 	@PostMapping("/refresh")
 	public ResponseEntity<ApiResponse<Map<String, String>>> refresh(@RequestBody Map<String, String> request) {
 		String oldRefreshTokenStr = request.get("refreshToken");
@@ -134,4 +192,3 @@ public class AuthController {
 		}
 	}
 }
-
