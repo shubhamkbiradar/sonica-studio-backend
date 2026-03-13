@@ -12,6 +12,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.RequireAnyRole;
+import com.project.sonica.aop.annotations.RequireRole;
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.BookingStatus;
 import com.project.sonica.entity.Customer;
@@ -27,7 +30,8 @@ public class BookingService {
 		this.bookingRepository = bookingRepository;
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequireRole("CUSTOMER")
+	@SonicaTx
 	public Booking createBooking(Booking booking) {
 		return bookingRepository.save(booking);
 	}
@@ -42,6 +46,7 @@ public class BookingService {
 	}
 
 	@PreAuthorize("hasRole('ADMIN') or #booking.customer.username == authentication.name")
+	@SonicaTx
 	public Booking updateBooking(Booking booking, Integer bookingId) {
 		Booking existing = bookingRepository.findById(bookingId)
 				.orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -78,7 +83,7 @@ public class BookingService {
 		return bookingRepository.findAll(spec, pageable);
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
+	@RequireAnyRole({ "ADMIN", "CUSTOMER" })
 	public List<Booking> getBookings() {
 		return bookingRepository.findAll();
 	}

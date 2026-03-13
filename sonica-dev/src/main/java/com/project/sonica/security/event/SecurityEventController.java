@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.sonica.aop.annotations.RequireRole;
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.apiResponseWrapper.ApiResponse;
 
 @RestController
 @RequestMapping("/api/admin/security-events")
-@PreAuthorize("hasRole('ADMIN')")
+@RequireRole("ADMIN")
 public class SecurityEventController {
 	@Autowired
 	private SecurityEventRepository securityEventRepository;
@@ -44,6 +45,7 @@ public class SecurityEventController {
 	}
 
 	@DeleteMapping("/{id}")
+	@SonicaTx
 	public ResponseEntity<ApiResponse<String>> deleteEvent(@PathVariable Long id) {
 		securityEventRepository.deleteById(id);
 		return ResponseEntity.ok(new ApiResponse<>(200, "Security event deleted successfully", "Deleted ID: " + id));

@@ -9,9 +9,11 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.RequireAnyRole;
+import com.project.sonica.aop.annotations.RequireRole;
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.entity.ServicePlan;
 import com.project.sonica.genericSearch.SearchOperation;
 import com.project.sonica.genericSearch.SpecificationBuilder;
@@ -25,12 +27,13 @@ public class ServicePlanService {
 		this.servicePlanRepository = servicePlanRepository;
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@RequireRole("ADMIN")
+	@SonicaTx
 	public ServicePlan createPlan(ServicePlan plan) {
 		return servicePlanRepository.save(plan);
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
+	@RequireAnyRole({ "ADMIN", "CUSTOMER" })
 	public List<ServicePlan> getAllPlans() {
 		return servicePlanRepository.findAll();
 	}
@@ -43,6 +46,7 @@ public class ServicePlanService {
 		return servicePlanRepository.findByEventType(eventType);
 	}
 
+	@SonicaTx
 	public ServicePlan updatePlan(Integer planId, ServicePlan updatedPlan) {
 		ServicePlan plan = servicePlanRepository.findById(planId)
 				.orElseThrow(() -> new RuntimeException("Service Plan not found"));
@@ -70,7 +74,8 @@ public class ServicePlanService {
 		return servicePlanRepository.findAll(spec, pageable);
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@RequireRole("ADMIN")
+	@SonicaTx
 	public void deletePlan(Integer planId) {
 		servicePlanRepository.deleteById(planId);
 	}

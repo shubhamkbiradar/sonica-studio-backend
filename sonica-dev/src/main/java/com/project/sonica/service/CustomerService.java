@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.entity.Customer;
-import com.project.sonica.entity.ServicePlan;
 import com.project.sonica.repos.CustomerRepository;
 
 @Service
@@ -17,6 +17,7 @@ public class CustomerService {
 		this.customerRepository = customerRepository;
 	}
 
+	@SonicaTx
 	public Customer registerCustomer(Customer customer) {
 		return customerRepository.save(customer);
 	}

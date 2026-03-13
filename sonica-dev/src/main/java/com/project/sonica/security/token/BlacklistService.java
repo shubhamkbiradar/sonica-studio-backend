@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.SonicaTx;
+
 @Service
 public class BlacklistService {
     @Autowired
     private BlacklistedTokenRepository blacklistedTokenRepository;
 
+    @SonicaTx
     public void blacklistToken(String token, Instant expiryDate) {
         BlacklistedToken blacklistedToken = new BlacklistedToken();
         blacklistedToken.setToken(token);
@@ -24,6 +27,7 @@ public class BlacklistService {
 
     // Optional: cleanup expired blacklisted tokens
     @Scheduled(cron = "0 0 * * * *") // hourly
+    @SonicaTx
     public void cleanupExpiredTokens() {
         Instant now = Instant.now();
         blacklistedTokenRepository.findAll().stream()

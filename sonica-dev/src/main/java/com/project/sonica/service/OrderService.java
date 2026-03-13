@@ -1,9 +1,10 @@
 package com.project.sonica.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.RequireRole;
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.Contract;
 import com.project.sonica.entity.Order;
@@ -26,7 +27,8 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @RequireRole("CUSTOMER")
+    @SonicaTx
     public Order createOrder(Integer bookingId, Integer paymentId, Long contractId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));

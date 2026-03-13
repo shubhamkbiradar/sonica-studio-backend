@@ -3,6 +3,7 @@ package com.project.sonica.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.security.User;
 import com.project.sonica.security.UserRepository;
 
@@ -17,6 +18,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @SonicaTx
     public User register(User user) {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("User already present, please login.");
@@ -34,6 +36,7 @@ public class UserService {
         return user;
     }
 
+    @SonicaTx
     public void resetPassword(String email, String newPassword) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found."));

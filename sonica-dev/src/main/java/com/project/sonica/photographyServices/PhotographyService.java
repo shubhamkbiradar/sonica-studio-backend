@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.RequireRole;
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.security.User;
 import com.project.sonica.security.UserRepository;
 
@@ -19,6 +21,8 @@ public class PhotographyService {
 	}
 
 	// Photographer adds a new service
+	@RequireRole("PHOTOGRAPHER")
+	@SonicaTx
 	public PhotographyServices addService(Long photographerId, PhotographyServices service) {
 		User photographer = userRepository.findById(photographerId)
 				.orElseThrow(() -> new RuntimeException("Photographer not found"));
@@ -27,6 +31,8 @@ public class PhotographyService {
 	}
 
 	// Photographer updates a service
+	@RequireRole("PHOTOGRAPHER")
+	@SonicaTx
 	public PhotographyServices updateService(Long serviceId, PhotographyServices updatedService) {
 		PhotographyServices existing = photohraphyServicesRepository.findById(serviceId)
 				.orElseThrow(() -> new RuntimeException("Service not found"));
@@ -38,6 +44,8 @@ public class PhotographyService {
 	}
 
 	// Photographer deletes a service
+	@RequireRole("PHOTOGRAPHER")
+	@SonicaTx
 	public void deleteService(Long serviceId) {
 		photohraphyServicesRepository.deleteById(serviceId);
 	}

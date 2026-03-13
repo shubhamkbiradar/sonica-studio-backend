@@ -1,9 +1,11 @@
 package com.project.sonica.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.RequireAnyRole;
+import com.project.sonica.aop.annotations.RequireRole;
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.entity.Booking;
 import com.project.sonica.entity.BookingStatus;
 import com.project.sonica.entity.Payment;
@@ -19,13 +21,15 @@ public class PaymentService {
 	@Autowired
 	private BookingRepository bookingRepository;
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequireRole("CUSTOMER")
+	@SonicaTx
 	public Payment initiatePayment(Payment payment) {
 		payment.setStatus(PaymentStatus.INITIATED);
 		return paymentRepository.save(payment);
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequireRole("CUSTOMER")
+	@SonicaTx
 	public Payment confirmPayment(Integer paymentId) {
 		Payment existing = paymentRepository.findById(paymentId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -33,7 +37,8 @@ public class PaymentService {
 		return paymentRepository.save(existing);
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequireRole("CUSTOMER")
+	@SonicaTx
 	public Payment retryPayment(Integer paymentId) {
 		Payment existing = paymentRepository.findById(paymentId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -43,7 +48,8 @@ public class PaymentService {
 		return paymentRepository.save(existing);
 	}
 
-	@PreAuthorize("hasRole('ADMIN')")
+	@RequireRole("ADMIN")
+	@SonicaTx
 	public Payment refundPayment(Integer paymentId) {
 		Payment existing = paymentRepository.findById(paymentId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -51,13 +57,14 @@ public class PaymentService {
 		return paymentRepository.save(existing);
 	}
 
-	@PreAuthorize("hasAnyRole('ADMIN','CUSTOMER')")
+	@RequireAnyRole({ "ADMIN", "CUSTOMER" })
 	public Payment getPaymentByTransactionId(String transactionId) {
 		return paymentRepository.findByTransactionId(transactionId)
 				.orElseThrow(() -> new RuntimeException("Payment not found with transactionId: " + transactionId));
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequireRole("CUSTOMER")
+	@SonicaTx
 	public Payment processPayment(Integer paymentId, PaymentStatus newStatus) {
 		Payment payment = paymentRepository.findById(paymentId)
 				.orElseThrow(() -> new RuntimeException("Payment not found with id: " + paymentId));
@@ -93,7 +100,8 @@ public class PaymentService {
 		return paymentRepository.save(payment);
 	}
 
-	@PreAuthorize("hasRole('CUSTOMER')")
+	@RequireRole("CUSTOMER")
+	@SonicaTx
 	public Payment processPayment(Payment payment) {
 		// Ensure the payment has a booking associated
 		Booking booking = payment.getBooking();
@@ -124,6 +132,7 @@ public class PaymentService {
 		return paymentRepository.save(payment);
 	}
 
+	@SonicaTx
 	public Payment markAsPending(String transactionId) {
 		Payment payment = paymentRepository.findByTransactionId(transactionId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -132,6 +141,7 @@ public class PaymentService {
 		return paymentRepository.save(payment);
 	}
 
+	@SonicaTx
 	public Payment markAsSuccessful(String transactionId) {
 		Payment payment = paymentRepository.findByTransactionId(transactionId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -141,6 +151,7 @@ public class PaymentService {
 	}
 
 	// Cash payment
+	@SonicaTx
 	public Payment requestCashPayment(String transactionId) {
 		Payment payment = paymentRepository.findByTransactionId(transactionId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));
@@ -153,6 +164,7 @@ public class PaymentService {
 		}
 	}
 
+	@SonicaTx
 	public Payment confirmCashPayment(String transactionId) {
 		Payment payment = paymentRepository.findByTransactionId(transactionId)
 				.orElseThrow(() -> new RuntimeException("Payment not found"));

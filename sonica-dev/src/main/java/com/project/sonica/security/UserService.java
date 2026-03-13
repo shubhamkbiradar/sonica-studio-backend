@@ -1,17 +1,21 @@
 package com.project.sonica.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.SonicaTx;
+
 @Service("securityUserService")
 public class UserService {
-	@Autowired
-	private UserRepository userRepository;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+		this.userRepository = userRepository;
+		this.passwordEncoder = passwordEncoder;
+	}
 
+	@SonicaTx
 	public User registerUser(RegisterRequest request) {
 		if (userRepository.findByUsername(request.getUsername()).isPresent()) {
 			throw new RuntimeException("Username already exists");
@@ -31,6 +35,7 @@ public class UserService {
 		return userRepository.save(user);
 	}
 	
+	@SonicaTx
 	public void resetPassword(String email, String newPassword) {
 	    User user = userRepository.findByEmail(email)
 	            .orElseThrow(() -> new RuntimeException("User not found."));

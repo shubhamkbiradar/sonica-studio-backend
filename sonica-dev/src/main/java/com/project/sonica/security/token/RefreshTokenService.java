@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.apiResponseWrapper.ApiResponse;
 import com.project.sonica.exceptionHandler.TokenBlacklistedException;
 
@@ -29,6 +30,7 @@ public class RefreshTokenService {
 	@Autowired
 	private BlacklistService blacklistService;
 
+	@SonicaTx
 	public RefreshToken createRefreshToken(String username) {
 		// delete old refresh tokens for this user
 		refreshTokenRepository.deleteByUsername(username);
@@ -44,6 +46,7 @@ public class RefreshTokenService {
 		return refreshTokenRepository.findByToken(token);
 	}
 
+	@SonicaTx
 	public RefreshToken verifyExpiration(RefreshToken token) {
 		if (token.getExpiryDate().isBefore(Instant.now())) {
 			refreshTokenRepository.delete(token);

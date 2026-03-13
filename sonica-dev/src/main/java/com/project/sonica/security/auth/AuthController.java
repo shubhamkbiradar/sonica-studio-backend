@@ -32,6 +32,7 @@ import com.project.sonica.security.token.BlacklistService;
 import com.project.sonica.security.token.RefreshToken;
 import com.project.sonica.security.token.RefreshTokenRepository;
 import com.project.sonica.security.token.RefreshTokenService;
+import com.project.sonica.aop.annotations.NoLog;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -58,12 +59,14 @@ public class AuthController {
 	private RefreshTokenRepository refreshTokenRepository;
 
 	@PostMapping("/register")
+	@NoLog
 	public ResponseEntity<ApiResponse<String>> register(@RequestBody RegisterRequest request) {
 		User user = userService.registerUser(request);
 		return ResponseEntity.ok(new ApiResponse<>(200, "User registered successfully", user.getUsername()));
 	}
 
 	@PostMapping("/login")
+	@NoLog
 	public ResponseEntity<ApiResponse<Map<String, String>>> login(@RequestBody AuthRequest request) {
 		// Use explicit credential verification so login behavior matches our persisted user model
 		// (users are looked up by email in CustomUserDetailsService).
@@ -97,6 +100,7 @@ public class AuthController {
 	 * 3) Backend verifies the ID token and issues Sonica access/refresh tokens.
 	 */
 	@PostMapping("/google")
+	@NoLog
 	public ResponseEntity<ApiResponse<Map<String, Object>>> google(@RequestBody GoogleAuthRequest request) {
 		User user = googleOAuthService.upsertFromIdToken(request.getIdToken());
 
@@ -125,6 +129,7 @@ public class AuthController {
 	 * - Optionally blacklists the provided access token until its expiry.
 	 */
 	@PostMapping("/logout")
+	@NoLog
 	public ResponseEntity<ApiResponse<String>> logout(@RequestBody LogoutRequest request,
 			jakarta.servlet.http.HttpServletRequest httpRequest) {
 		String refreshToken = request == null ? null : request.getRefreshToken();
@@ -158,6 +163,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/refresh")
+	@NoLog
 	public ResponseEntity<ApiResponse<Map<String, String>>> refresh(@RequestBody Map<String, String> request) {
 		String oldRefreshTokenStr = request.get("refreshToken");
 
@@ -183,6 +189,7 @@ public class AuthController {
 	}
 
 	@PostMapping("/forgot-password")
+	@NoLog
 	public ResponseEntity<String> forgotPassword(@RequestParam String email, @RequestParam String newPassword) {
 		try {
 			userService.resetPassword(email, newPassword);

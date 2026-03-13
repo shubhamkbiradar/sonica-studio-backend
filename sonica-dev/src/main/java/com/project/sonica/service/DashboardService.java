@@ -3,9 +3,9 @@ package com.project.sonica.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.RequireRole;
 import com.project.sonica.dto.AdminDashboard;
 import com.project.sonica.dto.CustomerDashboard;
 import com.project.sonica.entity.Booking;
@@ -33,7 +33,7 @@ public class DashboardService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @RequireRole("CUSTOMER")
     public CustomerDashboard getCustomerDashboard(String email) {
         Customer customer = customerRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
         List<Booking> bookings = bookingRepository.findByCustomer(customer);
@@ -43,7 +43,7 @@ public class DashboardService {
         return new CustomerDashboard(bookings, payments, reviews);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @RequireRole("ADMIN")
     public AdminDashboard getAdminDashboard() {
         List<Booking> bookings = bookingRepository.findAll();
         List<Payment> payments = paymentRepository.findAll();

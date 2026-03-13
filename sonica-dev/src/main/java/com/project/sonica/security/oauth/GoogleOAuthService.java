@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
+import com.project.sonica.aop.annotations.SonicaTx;
 import com.project.sonica.security.AuthProvider;
 import com.project.sonica.security.Role;
 import com.project.sonica.security.User;
@@ -26,6 +27,7 @@ public class GoogleOAuthService {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+	@SonicaTx
 	public User upsertFromIdToken(String idToken) {
 		if (idToken == null || idToken.isBlank()) {
 			throw new IllegalArgumentException("idToken is required");
